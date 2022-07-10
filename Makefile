@@ -7,5 +7,5 @@ clean:
 format:
 	@cargo fmt
 
-run:
+build:
 	@cargo run -q --package wildkv-server --bin wildkv-server -- --config ./config.toml
