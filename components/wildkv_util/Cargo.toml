@@ -1,0 +1,13 @@
+[package]
+name = "wildkv_util"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+slog = { version = "2.3", features = ["max_level_trace", "release_max_level_debug"] }
+slog-async = "2.3"
+slog-global = { version = "0.1", git = "https://github.com/breeswish/slog-global.git", rev = "d592f88e4dbba5eb439998463054f1a44fbf17b9" }
+slog-json = "2.3"
+slog-term = "2.4"

@@ -1,0 +1,6 @@
+log_file="/tmp/wildkv.log"
+
+[log]
+level="debug"
+[log.file]
+filename="/tmp/wildkv.log"
