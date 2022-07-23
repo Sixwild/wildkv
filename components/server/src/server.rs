@@ -1,3 +1,5 @@
+use std::fmt::Debug;
+use std::sync::Arc;
 use std::task::Poll;
 use tonic::{transport::Server as tonic_server, Request, Response, Status};
 
@@ -5,6 +7,15 @@ use signal::{trap::Trap, Signal::*};
 
 use wildkvpb::wildkv_server::{Wildkv, WildkvServer};
 use kvrpcpb::{RawGetRequest, RawGetResponse};
+use engine_rocks::{
+    RocksEngine,
+};
+use engine_traits::{
+    Engines,
+};
+use error_code::{
+    ErrorCodeExt
+};
 
 use crate::setup::*;
 use wildkv::config::WildKvConfig;
@@ -31,6 +42,8 @@ pub fn pre_start() {}
 
 fn run_impl(config: WildKvConfig) {
     let mut wildkv = WildKvServer::init(config);
+    let engines = wildkv.init_raw_engines();
+    wildkv.init_engines(engines.clone());
     let server_config = wildkv.init_server();
     wildkv.run_server(server_config);
 
@@ -60,15 +73,34 @@ pub fn wait_for_signal() {
 
 struct WildKvServer {
     servers: Option<Server>,
+    engines: Option<Engines<RocksEngine>>,
+    config: WildKvConfig,
 }
 
 impl WildKvServer {
     fn init(mut config: WildKvConfig) -> WildKvServer {
-        Self { servers: None }
+        Self { servers: None, engines: None, config: config.clone()}
     }
 
     fn init_server(&mut self) -> ServerConfig {
         ServerConfig { cluster_id: 0 }
+    }
+
+    fn init_raw_engines(&mut self) -> Engines<RocksEngine> {
+        let kv_engine = engine_rocks::raw_util::new_engine_default(&self.config.path);
+        let kv_engine = match kv_engine {
+            Ok(e) => e,
+            Err(e) => {
+                panic!("failed to create kv engine, {}", ErrorCodeExt::error_code(&e));
+            }
+        };
+        let mut kv_engine = RocksEngine::from_db(Arc::new(kv_engine));
+        let engines = Engines::new(kv_engine);
+        engines
+    }
+
+    fn init_engines(&mut self, engines: Engines<RocksEngine>) {
+       self.engines = Some(engines)
     }
 
     #[tokio::main]

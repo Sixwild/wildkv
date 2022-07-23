@@ -10,6 +10,9 @@ tonic = "0.2"
 prost = "0.6"
 tokio = { version = "0.2", features = ["macros"] }
 wildkv = { path = "../../", default-features = false }
+error_code = { path = "../error_code", default-features = false }
+engine_rocks = { path = "../engine_rocks", default-features = false }
+engine_traits = { path = "../engine_traits", default-features = false }
 
 [build-dependencies]
 tonic-build = {version = "0.2", features = ["prost"]}
