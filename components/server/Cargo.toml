@@ -6,4 +6,13 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
+tonic = "0.2"
+prost = "0.6"
+tokio = { version = "0.2", features = ["macros"] }
 wildkv = { path = "../../", default-features = false }
+
+[build-dependencies]
+tonic-build = {version = "0.2", features = ["prost"]}
+
+[target.'cfg(unix)'.dependencies]
+signal = "0.6"

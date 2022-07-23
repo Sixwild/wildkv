@@ -1,0 +1,78 @@
+syntax = "proto3";
+package kvrpcpb;
+
+import "errorpb.proto";
+
+message RawGetRequest {
+    bytes key = 1;
+    string cf = 2;
+    Context context = 3;
+}
+
+message RawGetResponse {
+    string error = 1;
+    bytes value = 2;
+    bool not_found = 3;
+}
+
+message RawPutRequest {
+    Context context = 1;
+    bytes key = 2;
+    bytes value = 3;
+    string cf = 4;
+    uint64 ttl = 5;
+    bool for_cas = 6;
+}
+
+message RawPutResponse {
+    Error region_error = 1;
+    string error = 2;
+}
+
+message RawDeleteRequest {
+    Context context = 1;
+    bytes key = 2;
+    string cf = 3;
+    bool for_cas = 4;
+}
+
+message RawDeleteResponse {
+    Error region_error = 1;
+    string error = 2;
+}
+
+message RawScanRequest {
+    Context context = 1;
+    bytes start_key = 2;
+    uint32 limit = 3;
+    bool key_only = 4;
+    string cf = 5;
+    bool reverse = 6;
+    bytes end_key = 7;
+}
+
+message RawScanResponse {
+    Error region_error = 1;
+    repeated KvPair kvs = 2;
+}
+
+message KvPair {
+    bytes key = 2;
+    bytes value = 3;
+}
+
+message Context {
+    APIVersion api_version = 1;
+}
+
+enum APIVersion {
+    V1 = 0;
+    V2 = 1;
+}
+
+message Error {
+    reserved "stale_epoch";
+
+    // The error message
+    string message = 1;
+}
