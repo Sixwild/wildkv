@@ -18,6 +18,9 @@ wildkv_util = { path = "components/wildkv_util", default-features = false }
 [workspace]
 members = [
     "cmd/wildkv-server",
-    "components/wildkv_util"
+    "components/error_code",
+    "components/wildkv_util",
+    "components/server",
+    "components/engine_rocks",
 ]
 default-members = ["cmd/wildkv-server"]

@@ -25,7 +25,7 @@ pub struct File {
 impl Default for File {
     fn default() -> Self {
         Self {
-            filename: "".to_owned(),
+            filename: "/tmp/wildkv/log".to_owned(),
             max_size: 300,
             max_days: 0,
             max_backups: 0,
@@ -79,8 +79,9 @@ impl Default for LogConfig {
 #[derive(Clone, Serialize, Deserialize, Debug)]
 #[serde(default)]
 pub struct WildKvConfig {
-    log_file: String,
+    pub log_file: String,
     pub log: LogConfig,
+    pub path: String,
 }
 
 impl Default for WildKvConfig {
@@ -88,6 +89,7 @@ impl Default for WildKvConfig {
         WildKvConfig {
             log_file: "".to_owned(),
             log: LogConfig::default(),
+            path: "/tmp/wildkv/db".to_owned(),
         }
     }
 }
